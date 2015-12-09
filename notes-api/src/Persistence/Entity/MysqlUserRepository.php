@@ -68,6 +68,8 @@ class MysqlUserRepository implements UserRepositoryInterface
 
             $users[$user->getUserID()->__toString()] = $user;
         }
+
+
     }
 
     public function modify($userID,
