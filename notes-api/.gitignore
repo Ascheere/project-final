@@ -14,6 +14,9 @@
 # .idea/tasks.xml
 # .idea/dictionaries
 
+
+/Persistence/dblogin.php
+
 # Sensitive or high-churn files:
 # .idea/dataSources.ids
 # .idea/dataSources.xml
