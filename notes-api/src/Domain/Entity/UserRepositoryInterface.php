@@ -35,7 +35,7 @@ interface UserRepositoryInterface
      * @return bool
      */
 
-    public function cointainsUser($userID);
+    public function containsUser($userID);
 
     public function removeById(Uuid $id);
 

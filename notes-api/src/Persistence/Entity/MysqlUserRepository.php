@@ -64,25 +64,19 @@ class MysqlUserRepository implements UserRepositoryInterface
         $query = "SELECT * FROM USERS";
 
         $result = mysql_query($query);
-        if(!result) die ("Database access failed: " . mysql_error());
+        if (!result) die ("Database access failed: " . mysql_error());
 
         $users = [];
 
-        while($row = mysql_fetch_array($result, MYSQL_ASSOC))
-        {
+        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
             $userID = new Uuid($row['UserID']);
             $user = new User($userID, $row['UserName'], $row['UserPassword'], $row['UserEmail'], $row['UserFirst'], $row['UserLast']);
 
             $users[$user->getUserID()] = $user;
+
+            return $users;
         }
-
-<<<<<<< HEAD
-        return $users;
-=======
-
->>>>>>> origin/master
     }
-
     public function modify($userID,
         $newFirstName = '',
         $newLastName = '',
