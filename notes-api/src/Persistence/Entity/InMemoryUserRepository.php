@@ -11,7 +11,6 @@ namespace Notes\Persistence\Entity;
 
 use Notes\Domain\Entity\User;
 use Notes\Domain\Entity\UserRepositoryInterface;
-use Notes\Domain\ValueObject\StringLiteral;
 use Notes\Domain\ValueObject\Uuid;
 
 class InMemoryUserRepository implements UserRepositoryInterface
@@ -64,7 +63,7 @@ class InMemoryUserRepository implements UserRepositoryInterface
  */
 
 
-    public function containsUser($userID)
+    public function cointainsUser($userID)
     {
         if(array_key_exists($userID, $this->users))
             return true;
@@ -87,34 +86,24 @@ class InMemoryUserRepository implements UserRepositoryInterface
         if($this->users[$userID] == null)
         {
             return false;
-        } else
-        {
-            if ($newFirstName != '')
-            {
-                /** @var \Notes\Domain\Entity\User $user */
-                $user = $this->users[$userID];
-                $user->setFirstName(new StringLiteral($newFirstName));
+        }
+        else {
+            if ($newFirstName != '') {
+                $this->users[$userID]->setFirstName($newFirstName);
             }
-            if ($newLastName != '')
-            {
-                $user = $this->users[$userID];
-                $user->setLastName(new StringLiteral($newLastName));
+            if ($newLastName != '') {
+                $this->users[$userID]->setLastName($newLastName);
             }
-            if ($newPassword != '')
-            {
-                $user = $this->users[$userID];
-                $user->setPassword($newPassword);
+            if ($newPassword != '') {
+                $this->users[$userID]->setPassword($newPassword);
             }
-            if ($newEmail != '')
-            {
-                $user = $this->users[$userID];
-                $user->setEmail($newEmail);
+            if ($newEmail != '') {
+                $this->users[$userID]->setEmail($newEmail);
             }
-            if ($newUsername != '')
-            {
-                $user = $this->users[$userID];
-                $user->setUsername($newUsername);
+            if ($newUsername != '') {
+                $this->users[$userID]->setUsername($newUsername);
             }
+
             return true;
         }
     }
@@ -128,7 +117,8 @@ class InMemoryUserRepository implements UserRepositoryInterface
         if($this->users[$userID] == null)
         {
             return false;
-        } else
+        }
+        else
         {
             unset($this->users[$userID]);
             return true;

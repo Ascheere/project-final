@@ -50,7 +50,7 @@ class User
         }
 
         $this->userName = new StringLiteral($userName);
-        $this->password = new StringLiteral(hash(sha256, $password));
+        $this->password = new StringLiteral($password);//new StringLiteral(hash(sha256, $password));
         $this->email = new StringLiteral($email);
         $this->firstName = new StringLiteral($firstName);
         $this->lastName = new StringLiteral($lastName);
@@ -129,7 +129,7 @@ class User
             );
         }
 
-        $this->password = new StringLiteral(hash(sha256, $password));
+        $this->password = new StringLiteral($password);// new StringLiteral(hash(sha256, $password));
         return $this;
     }
 
@@ -168,7 +168,7 @@ class User
     }
 
     /**
-     * @return Uuid
+     * @return string
      */
     public function getUserID()
     {

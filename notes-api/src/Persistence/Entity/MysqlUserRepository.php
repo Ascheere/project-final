@@ -31,15 +31,15 @@ class MysqlUserRepository implements UserRepositoryInterface
         $this->password = 'python2';
         $this->username = 'root';
 
-        $db_server = mysql_connect('127.0.0.1:8889', 'root', 'python2');
-        if(!$db_server)die("Can't connect to the database yo:". mysql_error());
+        $this->db_server = mysql_connect('127.0.0.1:8889', 'root', 'python2');
+        if(!$this->db_server)die("Can't connect to the database yo:". mysql_error());
         mysql_select_db('formdb')or die("Can't select that database mane:". mysql_error());
     }
 
 
     public function __destruct()
     {
-        mysql_close($this->db_server);
+        //mysql_close($this->db_server);
     }
     /**
      * @param User $user
@@ -47,8 +47,14 @@ class MysqlUserRepository implements UserRepositoryInterface
      */
     public function add(User $user)
     {
+        $userID = $user->getUserID();
+        $userName = $user->getUserName();
+        $userPassword = $user->getPassword();
+        $userFirst = $user->getFirstName();
+        $userLast = $user->getLastName();
+        $userEmail = $user->getEmail();
 
-        $query = "INSERT INTO USERS(UserID, UserName, UserPassword, UserFirst, UserLast, UserEmail) VALUES('$user->getUserID', '$user->getUserName()', '$user->getPassword()', '$user->getFirstName()', '$user->getLastName()', '$user->getEmail()') ";
+        $query = "INSERT INTO USERS(UserID, UserName, UserPassword, UserFirst, UserLast, UserEmail) VALUES('$userID', '$userName', '$userPassword', '$userFirst', '$userLast', '$userEmail') ";
 
         mysql_query($query) or die("Database access failed: " . mysql_error());
     }
@@ -64,10 +70,13 @@ class MysqlUserRepository implements UserRepositoryInterface
 
         while($row = mysql_fetch_array($result, MYSQL_ASSOC))
         {
-            $user = new User($row['UserID'], $row['UserName'], $row['UserPassword'], $row['UserEmail'], $row['UserFirst'], $row['UserLast']);
+            $userID = new Uuid($row['UserID']);
+            $user = new User($userID, $row['UserName'], $row['UserPassword'], $row['UserEmail'], $row['UserFirst'], $row['UserLast']);
 
-            $users[$user->getUserID()->__toString()] = $user;
+            $users[$user->getUserID()] = $user;
         }
+
+        return $users;
     }
 
     public function modify($userID,
@@ -84,11 +93,11 @@ class MysqlUserRepository implements UserRepositoryInterface
      * @param \Notes\Domain\ValueObject\Uuid $id
      * @param \Notes\Domain\Entity\User $user
      * @return bool
-     */
+     *
     public function modifyById(Uuid $id, User $user)
     {
         // TODO: Implement modifyById() method.
-    }
+    }*/
 
     /**
      * @param \Notes\Domain\ValueObject\Uuid $id
@@ -96,7 +105,11 @@ class MysqlUserRepository implements UserRepositoryInterface
      */
     public function removeById(Uuid $id)
     {
-        // TODO: Implement removeById() method.
+        $userID = $id->__toString();
+        $query = "DELETE FROM USERS WHERE UserID = '$userID'";
+        mysql_query($query);
+
+        return $this;
     }
 
     public function count()
@@ -110,7 +123,7 @@ class MysqlUserRepository implements UserRepositoryInterface
         //$resultArray = $result->fetch_array();
 
         // if this doesnt work then use a count function
-        return mysql_result($result, 0);
+        return (int) mysql_result($result, 0);
     }
 
     public function getUser($userID)

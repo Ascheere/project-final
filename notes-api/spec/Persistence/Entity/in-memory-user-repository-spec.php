@@ -15,7 +15,7 @@ describe( 'Notes\Persistence\Entity\InMemoryUserRepository', function() {
       $this->repo = new InMemoryUserRepository();
        $this->userFactory = new UserFactory();
    });
-    describe('->__constructor()', function() {
+    describe('->__constructr()', function() {
         it('should construct an InMemoryUserRepository object', function() {
            expect($this->repo)->to->be->instanceof('Notes\Persistence\Entity\InMemoryUserRepository');
         });
