@@ -76,7 +76,11 @@ class MysqlUserRepository implements UserRepositoryInterface
             $users[$user->getUserID()] = $user;
         }
 
+<<<<<<< HEAD
         return $users;
+=======
+
+>>>>>>> origin/master
     }
 
     public function modify($userID,
@@ -135,7 +139,7 @@ class MysqlUserRepository implements UserRepositoryInterface
      * @param \Notes\Domain\ValueObject\Uuid $id
      * @return bool
      */
-    public function cointainsUser($userID)
+    public function containsUser($userID)
     {
         // TODO: Implement cointainsUser() method.
     }
