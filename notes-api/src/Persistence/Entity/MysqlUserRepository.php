@@ -106,7 +106,7 @@ class MysqlUserRepository implements UserRepositoryInterface
      * @param \Notes\Domain\ValueObject\Uuid $id
      * @return bool
      */
-    public function cointainsUser($userID)
+    public function containsUser($userID)
     {
         // TODO: Implement cointainsUser() method.
     }
