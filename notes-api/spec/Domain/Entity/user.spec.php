@@ -38,13 +38,16 @@ describe('Notes\Domain\Entity\User', function() {
 
             $hashpass = hash(sha256, $password); // the costructor will hash the password im not adding a random salt at this point so it will be easier to implement and test
 
-            expect($actual->getPassword())->equal($hashpass);
+            expect($actual->getPassword())->equal($password);
 
             expect($actual->getFirstName())->equal($firstName);
 
             expect($actual->getLastName())->equal($lastName);
 
             expect($actual->getUserID())->equal($userID->__toString());
+
+
+            echo $actual->__toString();
         });
 
     });
@@ -102,7 +105,7 @@ describe('Notes\Domain\Entity\User', function() {
             $user->setPassword($password); // setPassword would likely only be used for empty user objects made by an admin or to reset a password
 
             $hashpass = hash(sha256, $password);
-            expect($user->getPassword())->equal($hashpass);
+            expect($user->getPassword())->equal($password);
         });
 
     });

@@ -118,7 +118,7 @@ class Admin implements UserGroupInterface
      */
     public function containsUser($userID)
     {
-        return $this->adminRepository->cointainsUser($userID);
+        return $this->adminRepository->containsUser($userID);
 
     }
 

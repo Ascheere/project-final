@@ -63,7 +63,7 @@ class InMemoryUserRepository implements UserRepositoryInterface
  */
 
 
-    public function cointainsUser($userID)
+    public function containsUser($userID)
     {
         if(array_key_exists($userID, $this->users))
             return true;
@@ -87,7 +87,6 @@ class InMemoryUserRepository implements UserRepositoryInterface
         {
             return false;
         }
-        else {
             if ($newFirstName != '') {
                 $this->users[$userID]->setFirstName($newFirstName);
             }
@@ -105,8 +104,8 @@ class InMemoryUserRepository implements UserRepositoryInterface
             }
 
             return true;
-        }
     }
+
 
     /**
      * @param \Notes\Domain\ValueObject\Uuid $id

@@ -15,7 +15,15 @@ $app->get('/',function(){
 
 $app->get('/users',function(){
         $repo = new \Notes\Persistence\Entity\MysqlUserRepository();
-        $jsons = json_encode($repo->getUsers());
+
+        $userArray = array();
+        $users = $repo->getUsers();
+        for($i = 0; $i < $repo->count(); $i++)
+        {
+            $userArray[] = array_pop($users)->__toString();
+        }
+        $jsons = json_encode($userArray);
+
         $response =  new Response($jsons, 200);
         $response->headers->set('Content-Type','application/json');
         $response->headers->set('Content-Length',strlen($jsons));
@@ -26,16 +34,9 @@ $app->post('/users',function(Request $request) {
 
     $payload = json_decode($request->getContent(), true);
 
-    $request->request->replace(is_array($payload) ? $payload : array());
 
-    $payload = array
-    (
-        'username'  => $request->request->get('username'),
-        'password'  => $request->request->get('password'),
-        'email'  => $request->request->get('email'),
-        'firstName'  => $request->request->get('firstName'),
-        'lastName'  => $request->request->get('lastName'),
-    );
+
+
     $repo = new \Notes\Persistence\Entity\MysqlUserRepository();
     $newUser = new \Notes\Domain\Entity\User(new \Notes\Domain\ValueObject\Uuid());
 
@@ -43,10 +44,12 @@ $app->post('/users',function(Request $request) {
     {
         $newUser->setUsername($payload['username']);
     }
+
     if(isset($payload['password']))
     {
-        $newUser->setPassword($payload['username']);
+        $newUser->setPassword($payload['password']);
     }
+
     if(isset($payload['email']))
     {
         $newUser->setEmail($payload['email']);
@@ -62,18 +65,16 @@ $app->post('/users',function(Request $request) {
 
     $repo->add($newUser);
 
-    $jsons = json_encode
-                ([
-                    $newUser->getUserID()->__toString(),
-                    $newUser->getUsername(),
-                    $newUser->getEmail(),
-                    $newUser->getFirstName(),
-                    $newUser->getLastName()
-                ]);
+    $responseData = [];
 
-    $response =  new Response($jsons, 201);
+    $responseData['UserId'] = $newUser->getUserID();
+
+    $responseJson = json_encode($responseData);
+
+    $response =  new Response(json_encode($responseData), 201);
     $response->headers->set('Content-Type','application/json');
-    $response->headers->set('Content-Length',strlen($jsons));
+    $response->headers->set('Content-Length',strlen($responseJson));
+    $response->headers->set('Content-Location', 'http://localhost:8989/users/' . $newUser->getUserID());
 
     return $response;
 });

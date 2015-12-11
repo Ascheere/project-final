@@ -119,7 +119,7 @@ class Owner implements UserGroupInterface
      */
     public function containsUser($userID)
     {
-        return $this->ownerRepository->cointainsUser($userID);
+        return $this->ownerRepository->containsUser($userID);
 
     }
 

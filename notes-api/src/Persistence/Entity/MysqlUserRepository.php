@@ -64,19 +64,23 @@ class MysqlUserRepository implements UserRepositoryInterface
         $query = "SELECT * FROM USERS";
 
         $result = mysql_query($query);
-        if (!result) die ("Database access failed: " . mysql_error());
+        if(!result) die ("Database access failed: " . mysql_error());
 
         $users = [];
 
-        while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+        while($row = mysql_fetch_array($result, MYSQL_ASSOC))
+        {
             $userID = new Uuid($row['UserID']);
             $user = new User($userID, $row['UserName'], $row['UserPassword'], $row['UserEmail'], $row['UserFirst'], $row['UserLast']);
 
-            $users[$user->getUserID()] = $user;
 
-            return $users;
+            $users[$user->getUserID()] = $user;
+            //die(print_r(json_encode($users,true)));
         }
+
+        return $users;
     }
+
     public function modify($userID,
         $newFirstName = '',
         $newLastName = '',
@@ -84,18 +88,66 @@ class MysqlUserRepository implements UserRepositoryInterface
         $newEmail = '',
         $newUsername = '')
     {
-        // TODO: Implement modify() method.
+        if($this->containsUser($userID) == false)
+        {
+            return false;
+        }
+
+        $id = $userID->__toString();
+
+        $setStatement = 'UPDATE USERS SET ';
+
+        // i know youre going to hate me but time is running out here
+
+        $flag = false;
+
+        if ($newFirstName != '') {
+           $setStatement .=  " UserFirst='$newFirstName'" ;
+
+            $flag = true;
+        }
+        if ($newLastName != '') {
+            if($flag)
+            {
+                $setStatement .= ', ';
+            }
+            $setStatement  .=  " UserLast='$newLastName'" ;
+            $flag = true;
+        }
+        if ($newPassword != '') {
+
+            if($flag)
+            {
+                $setStatement .= ', ';
+            }
+            $setStatement .= "UserPassword='$newPassword'" ;
+            $flag = true;
+        }
+        if ($newEmail != '') {
+            if($flag)
+            {
+                $setStatement .= ', ';
+            }
+            $setStatement  .=  "UserEmail='$newEmail'" ;
+            $flag = true;
+        }
+        if ($newUsername != '') {
+            if($flag)
+            {
+                $setStatement .= ', ';
+            }
+            $setStatement  .=  "UserName='$newUsername'" ;
+        }
+
+        $whereStatement = " WHERE UserID= '$id'";
+
+        $query = $setStatement . $whereStatement;
+
+        mysql_query($query);
+
+        return true;
     }
 
-    /**
-     * @param \Notes\Domain\ValueObject\Uuid $id
-     * @param \Notes\Domain\Entity\User $user
-     * @return bool
-     *
-    public function modifyById(Uuid $id, User $user)
-    {
-        // TODO: Implement modifyById() method.
-    }*/
 
     /**
      * @param \Notes\Domain\ValueObject\Uuid $id
@@ -126,7 +178,18 @@ class MysqlUserRepository implements UserRepositoryInterface
 
     public function getUser($userID)
     {
-        // TODO: Implement getUser() method.
+        $id = $userID->__toString();
+
+
+        $query = "SELECT UserID, UserName, UserPassword, UserFirst, UserLast, UserEmail  FROM USERS WHERE UserID= '$id'";
+
+        $result = mysql_query($query);
+        if(!result) die ("Database access failed: " . mysql_error());
+
+        $inuserID = new Uuid(mysql_result($result, 0, 'UserID'));
+        $user = new User($inuserID, mysql_result($result, 0, 'UserName'), mysql_result($result, 0, 'UserPassword'), mysql_result($result, 0, 'UserEmail'), mysql_result($result, 0, 'UserFirst'), mysql_result($result, 0, 'UserLast'));
+
+        return $user;
     }
 
     /**
@@ -135,6 +198,21 @@ class MysqlUserRepository implements UserRepositoryInterface
      */
     public function containsUser($userID)
     {
-        // TODO: Implement cointainsUser() method.
+        $id = $userID->__toString();
+
+
+        $query = "SELECT * FROM USERS WHERE UserID= '$id'";
+
+        $result = mysql_query($query);
+        if(!result) die ("Database access failed: " . mysql_error());
+
+        $rows = mysql_num_rows($result);
+
+        if($rows > 0)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

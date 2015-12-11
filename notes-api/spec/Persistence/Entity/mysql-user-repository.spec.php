@@ -92,12 +92,59 @@ describe( 'Notes\Persistence\Entity\MysqlUserRepository', function() {
         });
     });
 
-    /*
-     public function add(User $user);
-     public function getByUsername($username);
-     public function getUsers();
-     public function modify(User $user);
-     public function remove(User $user);
-     public function removeByUsername($username);
-    */
+    describe('->getUser($userID)', function() {
+        it('should return a single user that has the userid given', function () {
+            $actual = new MysqlUserRepository();
+
+            $username = "Swagzilla";
+            $password = "Yeezy2020!";
+            $email = "swagzillablaze@gmail.com";
+            $firstName = "Gary";
+            $lastName = "Grice";
+
+            $this->user1Key = new Uuid;
+            $user1 = new User($this->user1Key, $username, $password, $email, $firstName, $lastName);
+
+            $actual->add($user1);
+
+            $returnedUser = $actual->getUser($this->user1Key);
+
+            expect($returnedUser)->to->be->instanceof('Notes\Domain\Entity\User');
+
+            expect($returnedUser->getUserName())->to->equal($user1->getUserName());
+        });
+    });
+
+
+    describe('->containsUser($userID)', function() {
+        it('should return true if the user is in the database and false if they are not', function () {
+            $actual = new MysqlUserRepository();
+
+            expect($actual->containsUser($this->user1Key))->to->equal(true);
+
+            $fakeId = new Uuid();
+
+            expect($actual->containsUser($fakeId))->to->equal(false);
+
+        });
+    });
+
+    describe('->modify($userID)', function() {
+        it('should modify a user with the ID given with one or more input values', function () {
+
+            $actual = new MysqlUserRepository();
+
+            $passwordU = "OldDannyBrown12$";
+            $emailU = "Blazeit@gmail.com";
+
+            $actual->modify($this->user1Key,'', '', $passwordU, $emailU, '' );
+
+            $returnedUser = $actual->getUser($this->user1Key);
+
+            expect($returnedUser)->to->be->instanceof('Notes\Domain\Entity\User');
+
+            expect($returnedUser->getEmail())->to->equal($emailU);
+        });
+    });
+
 });

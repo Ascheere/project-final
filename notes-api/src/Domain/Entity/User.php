@@ -175,4 +175,12 @@ class User
         return $this->userID->__toString();
     }
 
+    public function __toString()
+    {
+        $StringRepresentation = '';
+
+        $StringRepresentation .= $this->getUserID() . ' ,' . $this->getUserName() . ' ,' . $this->getPassword() .' ,'. $this->getFirstName().' ,'.$this->getLastName(). $this->getEmail();
+
+        return $StringRepresentation;
+    }
 }
